@@ -1,0 +1,209 @@
+<div id=john-container>
+
+	<!-- <div class="squares background" id=div-one></div> -->
+	<div class="squares start centre" id="div-two">START</div>
+	<div class="squares zero" id=div-three></div>
+</div>
+<!-- <audio id="woosh" src="C:\Users\john0\OneDrive - Anglia Ruskin University\Misc\Web fun\Audio\woosh-sound-1.mp3" preload="auto"></audio> -->
+<!-- <audio id="woosh" src="C:\Users\john0\OneDrive - Anglia Ruskin University\Misc\Web fun\Audio\woosh-sound-2.mp3" preload="auto"></audio> -->
+<audio id="woosh" src="C:\Users\john0\OneDrive - Anglia Ruskin University\Misc\Web fun\Audio\woosh-sound-3.mp3" preload="auto"></audio>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lilita+One&display=swap');
+
+body{
+	overflow:hidden;
+}
+
+#john-container{
+	height:100%;
+	width:100%;
+	display:flex;
+	justify-content:center;
+	align-items:center;
+}
+
+.squares{
+	transition: all 1s ease;
+	position:absolute;
+	border-radius:50px;
+}
+
+.background{
+	width:200px;
+	height:200px;
+	z-index: 1;
+	transform:translate(1000px);
+	font-size: 100px!important;
+	color:rgba(0,0,0,0)!important;
+}
+
+.centre{
+	width:200px;
+	height:200px;
+	z-index:2;
+}
+
+.zero{
+	width:0px;
+	height:0px;
+	border:none!important;
+	z-index: 2;
+}
+
+.start{
+	font-family: "Lilita One", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  display:flex;
+	justify-content:center;
+	align-items:center;
+  font-size:40px;
+  user-select: none;
+  cursor:pointer;
+}
+</style>
+
+<script>
+//There are 3 states of div: background; centre; zero.
+//Background means the div is covering the whole page
+//Centre means the div is a 200x200 square in the middle of the page
+//Zero means the div is a 0x0 square in the middle of the page, ready to become centre
+//The lifecycle is: centre > background > zero and back to centre
+
+container = document.getElementById('john-container')
+
+centre = document.querySelector(".centre")
+zero = document.querySelector(".zero")
+background = document.querySelector(".background")
+start = document.querySelector(".start")
+
+woosh = document.getElementById("woosh")
+
+start.addEventListener("click", centreMouseoverFunction);
+
+function centreMouseoverFunction(){
+	console.log(centre.id," was hovered")
+	runCycle()
+};
+
+function runCycle(){
+	//Play woosh audio
+	woosh.currentTime = 0;
+	woosh.play()
+
+	//Make centre into background
+	centre.classList.add("background");
+	centre.classList.remove("centre");
+
+	//Make new zero
+	newzero = document.createElement("div")
+	container.appendChild(newzero)
+	newzero.style.backgroundColor = randomPastelColour()
+	newzero.classList.add("squares")
+	newzero.classList.add("zero")
+
+	//Make zero into centre
+	zero.classList.add("centre");
+	zero.classList.remove("zero");
+
+	randomizeBackgroundTransform();
+
+	//Delete background elements
+	var maxBackgroundDivs = 30;
+    var backgroundDivs = container.getElementsByClassName("background");
+    if (backgroundDivs.length > maxBackgroundDivs) {
+        // Remove the oldest div with the "background" class
+        container.removeChild(backgroundDivs[0]); // Remove the first div with the "background" class
+    }
+
+	//Remove eventlistener
+	centre.removeEventListener("mouseover", centreMouseoverFunction)
+	//Reset variables
+	centre = document.querySelector(".centre")
+	zero = document.querySelector(".zero")
+	background = document.querySelector(".background")
+
+	centre.addEventListener("mouseover", centreMouseoverFunction);
+}
+
+function randomizeBackgroundTransform() {
+  // Get all elements with the class name 'background'
+  const backgroundElements = document.querySelectorAll('.background');
+
+  // Loop through each background element
+  backgroundElements.forEach(function(element) {
+    // Generate random values for translation
+    const translateX = Math.random() * 3000-1500;
+    const translateY = Math.random() * 2000-1000;
+    //
+    
+    // Apply the random translation to the transform property
+    element.style.transform = `translate(${translateX}px, ${translateY}px)`;
+  });
+}
+
+function randomAnyColour() {
+    // Generate a random number between 0 and 16777215 (0xFFFFFF)
+    var randomColor = Math.floor(Math.random() * 16777215);
+    // Convert the number to hexadecimal and pad with zeros if necessary
+    var hexCode = randomColor.toString(16).padStart(6, '0');
+    // Return the hexadecimal color code
+    return '#' + hexCode;
+}
+
+function randomPastelColour() {
+    // Generate random values for R, G, and B components within a pastel range
+    var r = Math.floor(Math.random() * 128) + 128; // R component
+    var g = Math.floor(Math.random() * 128) + 128; // G component
+    var b = Math.floor(Math.random() * 128) + 128; // B component
+    // Convert the RGB components to hexadecimal and concatenate
+    var hexCode = "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+    // Return the hexadecimal color code
+    return hexCode;
+}
+
+// Function to convert RGB component to hexadecimal
+function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+}
+
+var currentIndex = 0;
+
+function randomOrangeColour() {
+    var hexCodes = [
+        "#ff6b0f",
+        "#ff8540",
+        "#ff9e66",
+        "#ffb78b",
+        "#ffcfb1",
+        "#ffe7d8"
+    ];
+
+    var currentHexCode = hexCodes[currentIndex];
+    currentIndex = (currentIndex + 1) % hexCodes.length;
+
+    return currentHexCode;
+}
+
+function randomGreenColour() {
+    var greenHexCodes = [
+        "#00ff00",
+        "#33cc33",
+        "#66ff66",
+        "#99cc00",
+        "#00cc00",
+        "#009933"
+    ];
+
+    var currentHexCode = greenHexCodes[currentIndex];
+    currentIndex = (currentIndex + 1) % greenHexCodes.length;
+
+    return currentHexCode;
+}
+
+document.getElementById("div-two").style.backgroundColor = randomPastelColour()
+document.getElementById("div-three").style.backgroundColor = randomPastelColour()
+
+</script>

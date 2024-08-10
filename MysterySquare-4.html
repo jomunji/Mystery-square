@@ -1,0 +1,179 @@
+<div id=john-container>
+	<div class="squares background1" id=div-one>1</div>
+	<div class="squares centre" id=div-two>2</div>
+	<div class="squares zero1" id=div-three>3</div>
+	<div class="squares zero2" id=div-four>4</div>
+	<div class="squares background3" id=div-five>5</div>
+	<div class="squares background2" id=div-six>6</div>
+</div>
+
+
+<style>
+#john-container{
+	height:100%;
+	width:100%;
+	display:flex;
+	justify-content:center;
+	align-items:center;
+}
+
+.squares{
+	transition: all 1s;
+	position:absolute;
+	border-radius:50px;
+}
+
+#div-one{
+/*	border:solid skyblue 10px;*/
+	background-color:#ff6b0f;
+}
+
+#div-two{
+/*	border:lightgreen solid 10px;*/
+	background-color:#ff8540;
+}
+
+#div-three{
+/*	border:gold solid 10px;*/
+	background-color:#ff9e66;
+}
+
+#div-four{
+/*	border:crimson solid 10px;*/
+	background-color:#ffb78b;
+}
+
+#div-five{
+/*	border:pink solid 10px;*/
+	background-color: #ffcfb1;
+}
+
+#div-six{
+	background-color:#ffe7d8;
+}
+
+.background3{
+	width:100%;
+	height:100%;
+	border:none!important;
+	z-index: -2;
+	border-radius:0px!important;
+}
+
+.background2{
+	width:85%;
+	height:85%;
+	border:none!important;
+	z-index: -1;
+	border-radius:0px!important;
+}
+
+.background1{
+	width:70%;
+	height:70%;
+	border:none!important;
+	z-index: 1;
+	border-radius:0px!important;
+}
+
+.centre{
+	width:200px;
+	height:200px;
+	z-index:2;
+}
+
+.zero1{
+	width:0px;
+	height:0px;
+	border:none!important;
+	z-index: 2;
+}
+
+.zero2{
+	width:0px;
+	height:0px;
+	border:none!important;
+	z-index: -2;
+	transition: width 0s 1.5s, height 0s 1.5s, border-radius 0s 1.5s;
+}
+
+/*@keyframes hoverAnimation {
+  0% {
+    width: 0px;
+    height: 0px;
+    border-width: 0px;
+  }
+  100% {
+    width: 100%;
+    height: 100%;
+    border-width: 0px;
+  }
+}*/
+</style>
+
+<script>
+const container = document.getElementById("john-container")
+// const one = document.getElementById("div-one")
+// const two = document.getElementById("div-two")
+// const three = document.getElementById("div-three")
+// const four = document.getElementById("div-four")
+
+//There is five states of div: background3; background2; background1; centre; zero1; zero2.
+//Background3 means the div is covering the whole page, and is going to become Zero2
+//Background2 means the div is covering the whole page, and is going to become background3
+//Background1 means the div is covering the whole page, and was just centre
+//Centre means the div is a 200x200 square in the middle of the page
+//Zero1 means the div is a 0x0 square in the middle of the page, ready to become centre
+//Zero2 means the div is a 0x0 square in the middle of the page, ready to become zero1
+//The lifecycle is: centre > background1 > background2 > background3 > zero2 > zero1 and back to centre
+//There is so many backgrounds to make sure the user doesn't see the white background of the document when the squares are going back to zero2
+
+
+centre = document.querySelector(".centre")
+zero1 = document.querySelector(".zero1")
+zero2 = document.querySelector(".zero2")
+background1 = document.querySelector(".background1")
+background2 = document.querySelector(".background2")
+background3 = document.querySelector(".background3")
+
+centre.addEventListener("mouseover", centreMouseoverFunction);
+
+function centreMouseoverFunction(){
+	console.log(centre.id," was hovered")
+	runCycle()
+};
+
+function runCycle(){
+	//Make centre into background1
+	centre.classList.add("background1");
+	centre.classList.remove("centre");
+	//Make zero1 into centre
+	zero1.classList.add("centre");
+	zero1.classList.remove("zero1");
+	//Make zero2 into zero1
+	zero2.classList.add("zero1");
+	zero2.classList.remove("zero2");
+	//Make background3 into zero2
+	background3.classList.add("zero2");
+	background3.classList.remove("background3");
+	//Make background2 into background3
+	background2.classList.add("background3");
+	background2.classList.remove("background2");
+	//Make background1 into background2
+	background1.classList.add("background2");
+	background1.classList.remove("background1");
+	//Remove eventlistener
+	centre.removeEventListener("mouseover", centreMouseoverFunction)
+	//Reset variables
+	centre = document.querySelector(".centre");
+	zero1 = document.querySelector(".zero1");
+	zero2 = document.querySelector(".zero2");
+	background1 = document.querySelector(".background1")
+	background2 = document.querySelector(".background2")
+	background3 = document.querySelector(".background3")
+
+	centre.addEventListener("mouseover", centreMouseoverFunction);
+}
+
+
+</script>
